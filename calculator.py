@@ -17,6 +17,10 @@ def readMulti(line,index):
     token = {'type': 'MULTI'}
     return token, index + 1
 
+def readDivi(line,index):
+    token = {'type': 'DIVI'}
+    return token, index + 1
+
 
 def readPlus(line, index):
     token = {'type': 'PLUS'}
@@ -40,11 +44,12 @@ def tokenize(line):
             (token, index) = readMinus(line, index)
         elif line[index] == '*':
             (token, index) = readMulti(line, index)
+        elif line[index] == '/':
+            (token, index) = readDivi(line, index)
         else:
             print 'Invalid character found: ' + line[index]
             exit(1)
         tokens.append(token)
-    print tokens
     return tokens
 
 
@@ -54,17 +59,16 @@ def evaluate(tokens):
     index = 1
     index2 = 1
     while index2 < len(tokens):
-        print 'in'
         if tokens[index2]['type'] == 'MULTI':
-            print index2
             tokens[index2 -1]['number']= tokens[index2 - 1]['number']*tokens[index2 + 1]['number']
-            del tokens[index2]
-            del tokens[index2+1]
-            print "multied"
-            print tokens
-            index2 += 2
+            del tokens[index2:index2+2]
+            index2 -=1
+        elif tokens[index2]['type'] == 'DIVI':
+            tokens[index2 -1]['number']= tokens[index2 - 1]['number']/tokens[index2 + 1]['number']
+            del tokens[index2:index2+2]
+            index2 -=1
         index2 += 1
-   
+        
 
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':            
