@@ -53,24 +53,24 @@ def tokenize(line):
     return tokens
 
 
-def evaluate(tokens):
-    answer = 0
-    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+def  evaluate_multi_and_divi(tokens):
     index = 1
-    index2 = 1
-    while index2 < len(tokens):
-        if tokens[index2]['type'] == 'MULTI':
-            tokens[index2 -1]['number']= tokens[index2 - 1]['number']*tokens[index2 + 1]['number']
-            del tokens[index2:index2+2]
-            index2 -=1
-        elif tokens[index2]['type'] == 'DIVI':
-            tokens[index2 -1]['number']= tokens[index2 - 1]['number']/tokens[index2 + 1]['number']
-            del tokens[index2:index2+2]
-            index2 -=1
-        index2 += 1
-        
-
     while index < len(tokens):
+        if tokens[index]['type'] == 'MULTI':
+           tokens[index -1]['number']= tokens[index - 1]['number']*tokens[index + 1]['number']
+           del tokens[index:index+2]
+           index -=1
+        elif tokens[index]['type'] == 'DIVI':
+            tokens[index -1]['number']= tokens[index - 1]['number']/tokens[index + 1]['number']
+            del tokens[index:index+2]
+            index -=1
+        index += 1
+    return tokens
+        
+def  evaluate_pulus_and_minus(tokens):
+     answer = 0
+     index = 1
+     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':            
             if tokens[index - 1]['type'] == 'PLUS':
                 answer += tokens[index]['number']
@@ -79,6 +79,14 @@ def evaluate(tokens):
             else:
                 print 'Invalid syntax'
         index += 1
+     return answer
+
+def evaluate(tokens):
+    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+
+    tokens2 = evaluate_multi_and_divi(tokens)
+    answer =  evaluate_pulus_and_minus(tokens2)
+
     return answer
 
 
